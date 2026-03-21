@@ -25,14 +25,15 @@ import {
   Link2,
   BookOpen,
   ExternalLink,
+  ArrowUpRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const stats = [
-  { label: "Aktive Projekte", value: mockProjects.filter((p) => p.status === "active").length, icon: FolderOpen, color: "text-primary" },
-  { label: "Generierte Dokumente", value: mockDocuments.filter((d) => d.status === "generated").length, icon: FileText, color: "text-info" },
-  { label: "In Bearbeitung", value: mockDocuments.filter((d) => d.status === "pending").length, icon: Clock, color: "text-warning" },
-  { label: "Erfolgsrate", value: "94%", icon: TrendingUp, color: "text-primary" },
+  { label: "Aktive Projekte", value: mockProjects.filter((p) => p.status === "active").length, icon: FolderOpen },
+  { label: "Generierte Dokumente", value: mockDocuments.filter((d) => d.status === "generated").length, icon: FileText },
+  { label: "In Bearbeitung", value: mockDocuments.filter((d) => d.status === "pending").length, icon: Clock },
+  { label: "Erfolgsrate", value: "94%", icon: TrendingUp },
 ];
 
 const activityIcons = {
@@ -42,31 +43,26 @@ const activityIcons = {
   download: Download,
 };
 
-const categoryColors: Record<string, string> = {
-  documentation: "bg-blue-100 text-blue-700",
-  architecture: "bg-purple-100 text-purple-700",
-  lessons: "bg-amber-100 text-amber-700",
-  update: "bg-green-100 text-green-700",
-};
-
 export default function DashboardPage() {
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-heading font-bold">Dashboard</h1>
-          <p className="text-muted-foreground mt-1">Willkommen zurück, Max Berger</p>
-        </div>
-        <div className="flex gap-3">
-          <Button variant="outline" asChild>
+    <div className="space-y-10 animate-fade-in max-w-6xl">
+      {/* Hero */}
+      <div>
+        <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-medium mb-3">Dashboard</p>
+        <h1 className="text-3xl md:text-4xl font-heading font-bold tracking-tight">
+          Willkommen zurück
+        </h1>
+        <p className="text-muted-foreground mt-2 text-base">Ihre Projektübersicht auf einen Blick.</p>
+        <div className="flex gap-3 mt-6">
+          <Button variant="outline" size="sm" asChild className="rounded-lg text-xs h-9">
             <Link to="/projects">
-              <Plus className="mr-2 h-4 w-4" />
+              <Plus className="mr-1.5 h-3.5 w-3.5" />
               Neues Projekt
             </Link>
           </Button>
-          <Button asChild>
+          <Button size="sm" asChild className="rounded-lg text-xs h-9">
             <Link to="/generate">
-              <FilePlus className="mr-2 h-4 w-4" />
+              <FilePlus className="mr-1.5 h-3.5 w-3.5" />
               Dokument generieren
             </Link>
           </Button>
@@ -74,230 +70,209 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => (
-          <Card key={stat.label}>
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
-                  <p className="text-2xl font-heading font-bold mt-1">{stat.value}</p>
-                </div>
-                <div className="h-10 w-10 rounded-lg bg-primary/5 flex items-center justify-center">
-                  <stat.icon className={`h-5 w-5 ${stat.color}`} />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div key={stat.label} className="p-5 rounded-xl border border-border/60 bg-card">
+            <div className="flex items-center justify-between mb-3">
+              <stat.icon className="h-4 w-4 text-muted-foreground" />
+            </div>
+            <p className="text-2xl font-heading font-bold tracking-tight">{stat.value}</p>
+            <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
+          </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Projects */}
-        <Card className="lg:col-span-2">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-lg font-heading">Aktuelle Projekte</CardTitle>
-            <Button variant="ghost" size="sm" asChild>
+        <div className="lg:col-span-2">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-heading font-semibold text-base tracking-tight">Aktuelle Projekte</h2>
+            <Button variant="ghost" size="sm" asChild className="text-xs text-muted-foreground hover:text-foreground h-8">
               <Link to="/projects">
-                Alle anzeigen <ArrowRight className="ml-1 h-4 w-4" />
+                Alle <ArrowRight className="ml-1 h-3.5 w-3.5" />
               </Link>
             </Button>
-          </CardHeader>
-          <CardContent className="space-y-4">
+          </div>
+          <div className="space-y-2">
             {mockProjects.slice(0, 3).map((project) => (
               <div
                 key={project.id}
-                className="flex items-center gap-4 p-3 rounded-lg border bg-card hover:bg-muted/50 transition-colors"
+                className="flex items-center gap-4 p-4 rounded-xl border border-border/60 bg-card hover:border-border transition-colors"
               >
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className="font-medium text-sm truncate">{project.name}</p>
+                  <div className="flex items-center gap-2.5">
+                    <p className="font-medium text-sm">{project.name}</p>
                     <StatusBadge status={project.status} />
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">{project.client}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{project.client}</p>
                 </div>
-                <div className="w-32 hidden sm:block">
-                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+                <div className="w-28 hidden sm:block">
+                  <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
                     <span>Fortschritt</span>
-                    <span>{project.progress}%</span>
+                    <span className="font-medium">{project.progress}%</span>
                   </div>
-                  <Progress value={project.progress} className="h-1.5" />
+                  <Progress value={project.progress} className="h-1" />
                 </div>
-                <span className="text-xs text-muted-foreground whitespace-nowrap">
+                <span className="text-xs text-muted-foreground whitespace-nowrap font-medium">
                   {project.documentsGenerated} Dok.
                 </span>
               </div>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Recent Activity */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg font-heading">Letzte Aktivitäten</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
+        <div>
+          <h2 className="font-heading font-semibold text-base tracking-tight mb-4">Letzte Aktivitäten</h2>
+          <div className="space-y-1">
             {mockActivities.map((activity) => {
               const Icon = activityIcons[activity.type];
               return (
-                <div key={activity.id} className="flex items-start gap-3">
-                  <div className="h-8 w-8 rounded-full bg-primary/5 flex items-center justify-center shrink-0 mt-0.5">
-                    <Icon className="h-3.5 w-3.5 text-primary" />
+                <div key={activity.id} className="flex items-start gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors">
+                  <div className="h-7 w-7 rounded-md bg-secondary flex items-center justify-center shrink-0 mt-0.5">
+                    <Icon className="h-3.5 w-3.5 text-foreground/60" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-medium">{activity.action}</p>
-                    <p className="text-xs text-muted-foreground truncate">{activity.project}</p>
-                    <p className="text-xs text-muted-foreground">{activity.timestamp}</p>
+                    <p className="text-sm font-medium leading-tight">{activity.action}</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">{activity.project} · {activity.timestamp}</p>
                   </div>
                 </div>
               );
             })}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Updates & Ressourcen */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Letzte Updates */}
-        <Card>
-          <CardHeader className="flex flex-row items-center gap-2 pb-2">
-            <Newspaper className="h-5 w-5 text-primary" />
-            <CardTitle className="text-lg font-heading">Letzte Updates</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-2 font-medium text-muted-foreground">Datum</th>
-                    <th className="text-left py-2 font-medium text-muted-foreground">Thema</th>
-                    <th className="text-left py-2 font-medium text-muted-foreground">Autor</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {mockUpdates.map((update) => (
-                    <tr key={update.id} className="border-b last:border-0 hover:bg-muted/30">
-                      <td className="py-2.5 text-muted-foreground whitespace-nowrap">{update.date}</td>
-                      <td className="py-2.5 font-medium">{update.topic}</td>
-                      <td className="py-2.5 text-muted-foreground whitespace-nowrap">{update.author}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Wichtige Links & Tools */}
-        <Card>
-          <CardHeader className="flex flex-row items-center gap-2 pb-2">
-            <Link2 className="h-5 w-5 text-primary" />
-            <CardTitle className="text-lg font-heading">Wichtige Links & Tools</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-2 font-medium text-muted-foreground">Tool</th>
-                    <th className="text-left py-2 font-medium text-muted-foreground">Link</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {mockProjectLinks.map((link) => (
-                    <tr key={link.id} className="border-b last:border-0 hover:bg-muted/30">
-                      <td className="py-2.5 font-medium">{link.tool}</td>
-                      <td className="py-2.5">
-                        <a
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-primary hover:underline"
-                        >
-                          Öffnen
-                          <ExternalLink className="h-3 w-3" />
-                        </a>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Blog / Wissensbereich */}
-      <Card>
-        <CardHeader className="flex flex-row items-center gap-2 pb-2">
-          <BookOpen className="h-5 w-5 text-primary" />
-          <CardTitle className="text-lg font-heading">Wissensbereich</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {mockBlogPosts.map((post) => (
-              <div
-                key={post.id}
-                className="p-4 rounded-xl border hover:bg-muted/30 transition-colors cursor-pointer"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${categoryColors[post.category] || "bg-muted text-muted-foreground"}`}>
-                    {blogCategoryLabels[post.category]}
-                  </span>
-                  <span className="text-xs text-muted-foreground">{post.date}</span>
-                </div>
-                <h4 className="font-medium text-sm mb-1">{post.title}</h4>
-                <p className="text-xs text-muted-foreground line-clamp-2">{post.excerpt}</p>
-                <p className="text-xs text-muted-foreground mt-2">von {post.author}</p>
-              </div>
-            ))}
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <h2 className="font-heading font-semibold text-base tracking-tight">Letzte Updates</h2>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Recent Documents */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-lg font-heading">Zuletzt generierte Dokumente</CardTitle>
-          <Button variant="ghost" size="sm" asChild>
-            <Link to="/documents">
-              Alle anzeigen <ArrowRight className="ml-1 h-4 w-4" />
-            </Link>
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
+          <div className="rounded-xl border border-border/60 overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b">
-                  <th className="text-left py-2 font-medium text-muted-foreground">Dokument</th>
-                  <th className="text-left py-2 font-medium text-muted-foreground">Typ</th>
-                  <th className="text-left py-2 font-medium text-muted-foreground">Version</th>
-                  <th className="text-left py-2 font-medium text-muted-foreground">Status</th>
-                  <th className="text-left py-2 font-medium text-muted-foreground">Datum</th>
-                  <th className="text-right py-2 font-medium text-muted-foreground">Aktion</th>
+                <tr className="border-b bg-secondary/30">
+                  <th className="text-left p-3 font-medium text-[11px] uppercase tracking-wider text-muted-foreground">Datum</th>
+                  <th className="text-left p-3 font-medium text-[11px] uppercase tracking-wider text-muted-foreground">Thema</th>
+                  <th className="text-left p-3 font-medium text-[11px] uppercase tracking-wider text-muted-foreground">Autor</th>
                 </tr>
               </thead>
               <tbody>
-                {mockDocuments.slice(0, 4).map((doc) => (
-                  <tr key={doc.id} className="border-b last:border-0 hover:bg-muted/30">
-                    <td className="py-3 font-medium">{doc.name}</td>
-                    <td className="py-3 text-muted-foreground">{documentTypeLabels[doc.type]}</td>
-                    <td className="py-3 text-muted-foreground">v{doc.version}</td>
-                    <td className="py-3"><StatusBadge status={doc.status} /></td>
-                    <td className="py-3 text-muted-foreground">{doc.createdAt}</td>
-                    <td className="py-3 text-right">
-                      <Button variant="ghost" size="sm" disabled={doc.status !== "generated"}>
-                        <Download className="h-4 w-4" />
-                      </Button>
+                {mockUpdates.map((update) => (
+                  <tr key={update.id} className="border-b last:border-0 hover:bg-secondary/20 transition-colors">
+                    <td className="p-3 text-muted-foreground text-xs whitespace-nowrap">{update.date}</td>
+                    <td className="p-3 text-sm font-medium">{update.topic}</td>
+                    <td className="p-3 text-muted-foreground text-xs whitespace-nowrap">{update.author}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Wichtige Links & Tools */}
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <h2 className="font-heading font-semibold text-base tracking-tight">Wichtige Links & Tools</h2>
+          </div>
+          <div className="rounded-xl border border-border/60 overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b bg-secondary/30">
+                  <th className="text-left p-3 font-medium text-[11px] uppercase tracking-wider text-muted-foreground">Tool</th>
+                  <th className="text-left p-3 font-medium text-[11px] uppercase tracking-wider text-muted-foreground">Link</th>
+                </tr>
+              </thead>
+              <tbody>
+                {mockProjectLinks.map((link) => (
+                  <tr key={link.id} className="border-b last:border-0 hover:bg-secondary/20 transition-colors">
+                    <td className="p-3 font-medium text-sm">{link.tool}</td>
+                    <td className="p-3">
+                      <a
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        Öffnen
+                        <ArrowUpRight className="h-3 w-3" />
+                      </a>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
+
+      {/* Blog / Wissensbereich */}
+      <div>
+        <h2 className="font-heading font-semibold text-base tracking-tight mb-4">Wissensbereich</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {mockBlogPosts.map((post) => (
+            <div
+              key={post.id}
+              className="p-5 rounded-xl border border-border/60 hover:border-border transition-colors cursor-pointer group"
+            >
+              <div className="flex items-center gap-2 mb-2.5">
+                <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                  {blogCategoryLabels[post.category]}
+                </span>
+                <span className="text-[10px] text-muted-foreground/60">·</span>
+                <span className="text-[10px] text-muted-foreground">{post.date}</span>
+              </div>
+              <h4 className="font-heading font-medium text-sm mb-1.5 group-hover:text-foreground/80 transition-colors">{post.title}</h4>
+              <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{post.excerpt}</p>
+              <p className="text-[10px] text-muted-foreground/60 mt-3">von {post.author}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Recent Documents */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-heading font-semibold text-base tracking-tight">Zuletzt generierte Dokumente</h2>
+          <Button variant="ghost" size="sm" asChild className="text-xs text-muted-foreground hover:text-foreground h-8">
+            <Link to="/documents">
+              Alle <ArrowRight className="ml-1 h-3.5 w-3.5" />
+            </Link>
+          </Button>
+        </div>
+        <div className="rounded-xl border border-border/60 overflow-hidden">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b bg-secondary/30">
+                <th className="text-left p-3 font-medium text-[11px] uppercase tracking-wider text-muted-foreground">Dokument</th>
+                <th className="text-left p-3 font-medium text-[11px] uppercase tracking-wider text-muted-foreground">Typ</th>
+                <th className="text-left p-3 font-medium text-[11px] uppercase tracking-wider text-muted-foreground">Version</th>
+                <th className="text-left p-3 font-medium text-[11px] uppercase tracking-wider text-muted-foreground">Status</th>
+                <th className="text-left p-3 font-medium text-[11px] uppercase tracking-wider text-muted-foreground">Datum</th>
+                <th className="text-right p-3 font-medium text-[11px] uppercase tracking-wider text-muted-foreground">Aktion</th>
+              </tr>
+            </thead>
+            <tbody>
+              {mockDocuments.slice(0, 4).map((doc) => (
+                <tr key={doc.id} className="border-b last:border-0 hover:bg-secondary/20 transition-colors">
+                  <td className="p-3 font-medium text-sm">{doc.name}</td>
+                  <td className="p-3 text-muted-foreground text-xs">{documentTypeLabels[doc.type]}</td>
+                  <td className="p-3 text-muted-foreground text-xs">v{doc.version}</td>
+                  <td className="p-3"><StatusBadge status={doc.status} /></td>
+                  <td className="p-3 text-muted-foreground text-xs">{doc.createdAt}</td>
+                  <td className="p-3 text-right">
+                    <Button variant="ghost" size="sm" disabled={doc.status !== "generated"} className="h-7 w-7 p-0">
+                      <Download className="h-3.5 w-3.5" />
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }
