@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(SKILL_DIR=\"/Users/luisfederolf/Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin/1dd39d1f-bb41-45bd-a854-f5c85151e88c/2705fc0d-0062-4c1b-89d9-3b9da7e329e5/skills/docx\")",
+      "Bash(python3 \"$SKILL_DIR/scripts/office/unpack.py\" /Users/luisfederolf/Downloads/Blueprint_Template.docx /tmp/blueprint_unpacked/)",
+      "Bash(pip3 install:*)",
+      "Bash(SKILL_DIR=\"/Users/luisfederolf/Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin/1dd39d1f-bb41-45bd-a854-f5c85151e88c/2705fc0d-0062-4c1b-89d9-3b9da7e329e5/skills/docx\" for f in \"/Users/luisfederolf/Downloads/Blueprint Template.docx\" \"/Users/luisfederolf/Downloads/Blueprint_Template_first_test.docx\" \"/Users/luisfederolf/Downloads/Blueprint_luis.docx\")",
+      "Bash(do echo:*)",
+      "Read(//private/tmp/tempo-form-gen/public/**)",
+      "Read(//private/tmp/tempo-form-gen/**)",
+      "Bash(find /tmp/tempo-form-gen -name *.docx -o -name Blueprint*)",
+      "Bash(SKILL_DIR=\"/Users/luisfederolf/Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin/1dd39d1f-bb41-45bd-a854-f5c85151e88c/2705fc0d-0062-4c1b-89d9-3b9da7e329e5/skills/docx\" rm -rf /tmp/bp_repo python3 \"$SKILL_DIR/scripts/office/unpack.py\" \"/tmp/tempo-form-gen/public/Blueprint_Template.docx\" /tmp/bp_repo/ 2)",
+      "Bash(1 echo:*)",
+      "Bash(python3 -:*)",
+      "mcp__Claude_Preview__preview_start"
+    ]
+  }
+}
