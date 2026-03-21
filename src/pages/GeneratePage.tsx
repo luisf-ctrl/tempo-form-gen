@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DynamicForm } from "@/components/DynamicForm";
 import {
@@ -48,7 +47,6 @@ export default function GeneratePage() {
   const projectIdFromUrl = searchParams.get("project");
   const typeFromUrl = searchParams.get("type") as DocumentTemplateType | null;
 
-  // State
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(projectIdFromUrl);
   const [selectedDocTypes, setSelectedDocTypes] = useState<DocumentTemplateType[]>(
     typeFromUrl ? [typeFromUrl] : []
@@ -67,7 +65,6 @@ export default function GeneratePage() {
     ? documentTemplates.filter((t) => t.applicableAreas.includes(project.solutionArea))
     : [];
 
-  // If project changes, pre-fill form values from project parameters
   useEffect(() => {
     if (project) {
       const placeholders = buildProjectPlaceholderMap(project);
@@ -136,7 +133,6 @@ export default function GeneratePage() {
     }
     setIsGenerating(true);
     try {
-      // For now, generate blueprint DOCX if selected
       const blueprintType = selectedDocTypes.find((t) => t === "blueprint");
       if (blueprintType) {
         const tpl = documentTemplates.find((t) => t.type === "blueprint");
@@ -196,32 +192,27 @@ export default function GeneratePage() {
     return (
       <div className="animate-fade-in max-w-5xl mx-auto pb-12">
         <div className="mb-10">
-          <div className="inline-flex items-center gap-2 rounded-full bg-card border px-3 py-1 text-xs font-medium text-muted-foreground mb-4">
-            <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
-            Dokument generieren
-          </div>
+          <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-medium mb-3">Generieren</p>
           <h1 className="text-3xl md:text-4xl font-heading font-bold tracking-tight">
             Projekt auswählen
           </h1>
-          <p className="text-muted-foreground mt-2 text-base max-w-xl">
+          <p className="text-muted-foreground mt-2 text-sm">
             Wählen Sie ein Projekt, für das Sie Dokumente generieren möchten.
           </p>
         </div>
 
         {projects.length === 0 ? (
-          <Card>
-            <CardContent className="flex flex-col items-center py-16">
-              <FolderOpen className="h-12 w-12 text-muted-foreground/30 mb-4" />
-              <p className="text-muted-foreground mb-4">Noch keine Projekte vorhanden</p>
-              <Button asChild>
-                <Link to="/projects">
-                  <FilePlus className="mr-2 h-4 w-4" /> Projekt anlegen
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="rounded-xl border border-border/60 p-16 text-center">
+            <FolderOpen className="h-10 w-10 text-muted-foreground/20 mx-auto mb-4" />
+            <p className="text-muted-foreground text-sm mb-4">Noch keine Projekte vorhanden</p>
+            <Button asChild size="sm" className="rounded-lg">
+              <Link to="/projects">
+                <FilePlus className="mr-1.5 h-3.5 w-3.5" /> Projekt anlegen
+              </Link>
+            </Button>
+          </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {projects.map((p) => {
               const areaConfig = solutionAreas.find((a) => a.id === p.solutionArea);
               const Icon = areaConfig?.icon || FolderOpen;
@@ -229,26 +220,26 @@ export default function GeneratePage() {
                 <button
                   key={p.id}
                   onClick={() => setSelectedProjectId(p.id)}
-                  className="group relative flex flex-col p-6 rounded-3xl border bg-card text-left transition-all hover:shadow-lg hover:border-primary/30 hover:-translate-y-0.5"
+                  className="group relative flex flex-col p-5 rounded-xl border border-border/60 bg-card text-left transition-all hover:border-foreground/15"
                 >
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center", areaConfig?.color || "bg-muted")}>
-                      <Icon className="h-5 w-5" />
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-8 w-8 rounded-md bg-secondary flex items-center justify-center">
+                      <Icon className="h-4 w-4 text-foreground/60" />
                     </div>
                     <div>
-                      <h3 className="font-heading font-semibold">{p.name}</h3>
-                      <p className="text-xs text-muted-foreground">{p.client}</p>
+                      <h3 className="font-heading font-semibold text-sm tracking-tight">{p.name}</h3>
+                      <p className="text-[11px] text-muted-foreground">{p.client}</p>
                     </div>
                   </div>
                   {areaConfig && (
-                    <Badge variant="outline" className={cn("text-xs w-fit mb-2", areaConfig.color)}>
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1.5">
                       {areaConfig.label}
-                    </Badge>
+                    </p>
                   )}
                   {p.description && (
-                    <p className="text-sm text-muted-foreground line-clamp-2">{p.description}</p>
+                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{p.description}</p>
                   )}
-                  <ChevronRight className="absolute top-6 right-6 h-5 w-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ChevronRight className="absolute top-5 right-5 h-4 w-4 text-muted-foreground/30 group-hover:text-foreground/40 transition-colors" />
                 </button>
               );
             })}
@@ -260,35 +251,29 @@ export default function GeneratePage() {
 
   // ===== STEP 1: DOCUMENT TYPE SELECTION =====
   if (selectedDocTypes.length === 0 && !isComplete) {
-    const areaConfig = solutionAreas.find((a) => a.id === project.solutionArea);
     return (
       <div className="animate-fade-in max-w-5xl mx-auto pb-12">
         <div className="mb-10">
           <button
             onClick={() => setSelectedProjectId(null)}
-            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
+            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-4"
           >
-            <ArrowLeft className="h-4 w-4" /> Projekt wechseln
+            <ArrowLeft className="h-3.5 w-3.5" /> Projekt wechseln
           </button>
-          <div className="flex items-center gap-3 mb-2">
-            {areaConfig && (
-              <div className={cn("h-8 w-8 rounded-xl flex items-center justify-center", areaConfig.color)}>
-                <areaConfig.icon className="h-4 w-4" />
-              </div>
-            )}
-            <div className="inline-flex items-center gap-2 rounded-full bg-card border px-3 py-1 text-xs font-medium text-muted-foreground">
+          <div className="flex items-center gap-2 mb-3">
+            <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-medium">
               {project.name}
-            </div>
+            </p>
           </div>
           <h1 className="text-3xl md:text-4xl font-heading font-bold tracking-tight">
             Dokumente auswählen
           </h1>
-          <p className="text-muted-foreground mt-2 text-base max-w-xl">
-            Welche Dokumente möchten Sie für <span className="font-medium text-foreground">{project.name}</span> generieren?
+          <p className="text-muted-foreground mt-2 text-sm">
+            Welche Dokumente möchten Sie generieren?
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
           {areaTemplates.map((tpl) => {
             const isSelected = selectedDocTypes.includes(tpl.type);
             return (
@@ -297,26 +282,31 @@ export default function GeneratePage() {
                 type="button"
                 onClick={() => toggleDocType(tpl.type)}
                 className={cn(
-                  "flex items-start gap-4 p-5 rounded-2xl border text-left transition-all",
+                  "flex items-start gap-4 p-5 rounded-xl border text-left transition-all",
                   isSelected
-                    ? "border-primary bg-primary/5 shadow-sm"
-                    : "hover:bg-secondary/50 hover:shadow-sm"
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border/60 hover:border-foreground/15"
                 )}
               >
                 <div className={cn(
-                  "mt-0.5 h-5 w-5 rounded-lg border-2 flex items-center justify-center shrink-0 transition-colors",
-                  isSelected ? "bg-primary border-primary" : "border-muted-foreground/30"
+                  "mt-0.5 h-5 w-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors",
+                  isSelected ? "border-background bg-background" : "border-muted-foreground/30"
                 )}>
-                  {isSelected && <Check className="h-3 w-3 text-primary-foreground" />}
+                  {isSelected && <Check className="h-3 w-3 text-foreground" />}
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <p className="font-medium text-sm">{tpl.label}</p>
-                    <Badge variant="outline" className={cn("text-xs", formatColors[tpl.format])}>
+                    <span className={cn(
+                      "text-[10px] uppercase tracking-wider font-medium",
+                      isSelected ? "text-background/60" : "text-muted-foreground"
+                    )}>
                       {formatLabels[tpl.format]}
-                    </Badge>
+                    </span>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">{tpl.description}</p>
+                  <p className={cn("text-xs mt-1 leading-relaxed", isSelected ? "text-background/70" : "text-muted-foreground")}>
+                    {tpl.description}
+                  </p>
                 </div>
               </button>
             );
@@ -333,13 +323,14 @@ export default function GeneratePage() {
                   handleGenerate();
                 }
               }}
-              className="rounded-2xl px-8"
+              size="sm"
+              className="rounded-lg h-9 px-6"
             >
               {needsBlueprintWizard ? (
-                <>Weiter konfigurieren <ChevronRight className="ml-2 h-4 w-4" /></>
+                <>Weiter konfigurieren <ChevronRight className="ml-1.5 h-3.5 w-3.5" /></>
               ) : (
                 <>
-                  <Sparkles className="mr-2 h-4 w-4" /> Generieren
+                  <Sparkles className="mr-1.5 h-3.5 w-3.5" /> Generieren
                 </>
               )}
             </Button>
@@ -353,14 +344,11 @@ export default function GeneratePage() {
   if (isGenerating) {
     return (
       <div className="animate-fade-in max-w-5xl mx-auto pb-12">
-        <div className="rounded-3xl bg-card border shadow-sm overflow-hidden">
+        <div className="rounded-xl border border-border/60 overflow-hidden">
           <div className="flex flex-col items-center justify-center py-24">
-            <div className="relative">
-              <div className="h-16 w-16 rounded-full border-2 border-border" />
-              <Loader2 className="h-16 w-16 text-primary animate-spin absolute inset-0" />
-            </div>
-            <p className="font-heading font-semibold text-xl mt-6">Dokumente werden generiert...</p>
-            <p className="text-sm text-muted-foreground mt-2">{project.name}</p>
+            <Loader2 className="h-8 w-8 text-foreground animate-spin" />
+            <p className="font-heading font-semibold text-lg mt-6 tracking-tight">Dokumente werden generiert...</p>
+            <p className="text-xs text-muted-foreground mt-1">{project.name}</p>
           </div>
         </div>
       </div>
@@ -371,36 +359,34 @@ export default function GeneratePage() {
   if (isComplete) {
     return (
       <div className="animate-fade-in max-w-5xl mx-auto pb-12">
-        <div className="rounded-3xl bg-card border shadow-sm overflow-hidden p-8 md:p-12">
+        <div className="rounded-xl border border-border/60 overflow-hidden p-8 md:p-12">
           <div className="text-center mb-10">
-            <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-success/10 mb-4">
-              <CheckCircle2 className="h-8 w-8 text-success" />
+            <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-success/10 mb-4">
+              <CheckCircle2 className="h-6 w-6 text-success" />
             </div>
-            <h2 className="font-heading font-bold text-2xl">Erfolgreich generiert!</h2>
-            <p className="text-muted-foreground mt-2">
-              {selectedDocTypes.length} Dokument(e) für {project.name} erstellt
+            <h2 className="font-heading font-bold text-2xl tracking-tight">Erfolgreich generiert</h2>
+            <p className="text-muted-foreground text-sm mt-1">
+              {selectedDocTypes.length} Dokument(e) für {project.name}
             </p>
           </div>
 
-          <div className="space-y-3 mb-8">
+          <div className="space-y-2 mb-8">
             {selectedDocTypes.map((type) => {
               const tpl = documentTemplates.find((t) => t.type === type);
               return (
-                <div key={type} className="flex items-center justify-between p-5 rounded-2xl border bg-secondary/30">
-                  <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <FileText className="h-5 w-5 text-primary" />
-                    </div>
+                <div key={type} className="flex items-center justify-between p-4 rounded-xl border border-border/60 bg-secondary/20">
+                  <div className="flex items-center gap-3">
+                    <FileText className="h-4 w-4 text-muted-foreground" />
                     <div>
-                      <p className="font-medium">{tpl?.label || type}</p>
-                      <p className="text-xs text-muted-foreground">
-                        v1.0 · {project.name} · {new Date().toLocaleDateString("de-DE")} · {tpl?.format.toUpperCase()}
+                      <p className="font-medium text-sm">{tpl?.label || type}</p>
+                      <p className="text-[10px] text-muted-foreground">
+                        v1.0 · {new Date().toLocaleDateString("de-DE")} · {tpl?.format.toUpperCase()}
                       </p>
                     </div>
                   </div>
                   {generatedBlob && type === "blueprint" && (
-                    <Button variant="outline" size="sm" className="rounded-xl" onClick={handleDownload}>
-                      <Download className="mr-2 h-4 w-4" /> Download
+                    <Button variant="outline" size="sm" className="rounded-lg h-8 text-xs" onClick={handleDownload}>
+                      <Download className="mr-1.5 h-3.5 w-3.5" /> Download
                     </Button>
                   )}
                 </div>
@@ -408,12 +394,12 @@ export default function GeneratePage() {
             })}
           </div>
 
-          <div className="flex justify-center gap-4 mt-8">
-            <Button variant="outline" onClick={() => navigate(`/projects/${project.id}`)} className="rounded-2xl px-6">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Zum Projekt
+          <div className="flex justify-center gap-3 mt-8">
+            <Button variant="outline" onClick={() => navigate(`/projects/${project.id}`)} size="sm" className="rounded-lg h-9 px-5">
+              <ArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Zum Projekt
             </Button>
-            <Button onClick={handleReset} className="rounded-2xl px-6">
-              <Sparkles className="mr-2 h-4 w-4" /> Neues Dokument
+            <Button onClick={handleReset} size="sm" className="rounded-lg h-9 px-5">
+              <Sparkles className="mr-1.5 h-3.5 w-3.5" /> Neues Dokument
             </Button>
           </div>
         </div>
@@ -421,22 +407,22 @@ export default function GeneratePage() {
     );
   }
 
-  // ===== BLUEPRINT WIZARD (for docs that need technical config) =====
+  // ===== BLUEPRINT WIZARD =====
   const activeProcessCount = PROCESS_LABELS.filter(([key]) => formValues[key]).length;
 
   return (
     <div className="animate-fade-in max-w-5xl mx-auto pb-12">
-      <div className="mb-10">
+      <div className="mb-8">
         <button
           onClick={() => { setSelectedDocTypes([]); setCurrentStep(0); }}
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
+          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-4"
         >
-          <ArrowLeft className="h-4 w-4" /> Dokumentauswahl
+          <ArrowLeft className="h-3.5 w-3.5" /> Dokumentauswahl
         </button>
-        <h1 className="text-3xl md:text-4xl font-heading font-bold tracking-tight">
+        <h1 className="text-3xl font-heading font-bold tracking-tight">
           Konfigurieren & Generieren
         </h1>
-        <p className="text-muted-foreground mt-2 text-base max-w-xl">
+        <p className="text-muted-foreground mt-1 text-sm">
           Technische Details für {project.name} konfigurieren.
         </p>
       </div>
@@ -453,43 +439,43 @@ export default function GeneratePage() {
                 <button
                   onClick={() => { if (isDone) setCurrentStep(i); }}
                   className={cn(
-                    "flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-medium transition-all whitespace-nowrap",
-                    isActive && "bg-primary text-primary-foreground shadow-lg shadow-primary/20",
-                    isDone && "bg-card border text-foreground cursor-pointer hover:shadow-md",
+                    "flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all whitespace-nowrap",
+                    isActive && "bg-foreground text-background",
+                    isDone && "bg-secondary text-foreground cursor-pointer hover:bg-secondary/80",
                     !isActive && !isDone && "text-muted-foreground"
                   )}
                 >
                   {isDone ? (
-                    <div className="h-5 w-5 rounded-full bg-success flex items-center justify-center">
-                      <Check className="h-3 w-3 text-success-foreground" />
+                    <div className="h-4 w-4 rounded-full bg-success flex items-center justify-center">
+                      <Check className="h-2.5 w-2.5 text-success-foreground" />
                     </div>
                   ) : (
-                    <Icon className="h-4 w-4" />
+                    <Icon className="h-3.5 w-3.5" />
                   )}
                   <span className="hidden lg:inline">{step.label}</span>
                 </button>
                 {i < blueprintWizardSteps.length - 1 && (
-                  <div className={cn("w-6 h-px mx-1 hidden md:block", isDone ? "bg-success" : "bg-border")} />
+                  <div className={cn("w-6 h-px mx-1 hidden md:block", isDone ? "bg-foreground/20" : "bg-border")} />
                 )}
               </div>
             );
           })}
         </div>
-        <div className="mt-4 h-1 w-full rounded-full bg-secondary overflow-hidden">
-          <div className="h-full rounded-full bg-primary transition-all duration-500 ease-out" style={{ width: `${progress}%` }} />
+        <div className="mt-4 h-0.5 w-full rounded-full bg-secondary overflow-hidden">
+          <div className="h-full rounded-full bg-foreground transition-all duration-500 ease-out" style={{ width: `${progress}%` }} />
         </div>
       </div>
 
-      <div className="rounded-3xl bg-card border shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-border/60 overflow-hidden">
         <div className="p-8 md:p-10">
           <div className="mb-8">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center">
-                {(() => { const Icon = stepIcons[currentStep]; return <Icon className="h-4 w-4 text-primary" />; })()}
+            <div className="flex items-center gap-3 mb-1.5">
+              <div className="h-7 w-7 rounded-md bg-secondary flex items-center justify-center">
+                {(() => { const Icon = stepIcons[currentStep]; return <Icon className="h-3.5 w-3.5 text-foreground/60" />; })()}
               </div>
-              <h2 className="font-heading font-semibold text-xl">{blueprintWizardSteps[currentStep].label}</h2>
+              <h2 className="font-heading font-semibold text-lg tracking-tight">{blueprintWizardSteps[currentStep].label}</h2>
             </div>
-            <p className="text-sm text-muted-foreground ml-11">{blueprintWizardSteps[currentStep].description}</p>
+            <p className="text-xs text-muted-foreground ml-10">{blueprintWizardSteps[currentStep].description}</p>
           </div>
 
           {/* Form steps 0-5 */}
@@ -499,33 +485,33 @@ export default function GeneratePage() {
 
           {/* Step 6: Generate */}
           {currentStep === 6 && (
-            <div className="space-y-8">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="rounded-2xl border bg-secondary/30 p-4 text-center">
-                  <p className="text-2xl font-heading font-bold">{activeProcessCount}</p>
-                  <p className="text-xs text-muted-foreground mt-1">Prozesse aktiv</p>
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="rounded-xl border border-border/60 p-4 text-center">
+                  <p className="text-2xl font-heading font-bold tracking-tight">{activeProcessCount}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5 uppercase tracking-wider">Prozesse</p>
                 </div>
-                <div className="rounded-2xl border bg-secondary/30 p-4 text-center">
-                  <p className="text-2xl font-heading font-bold">{formValues.number_of_materials || "–"}</p>
-                  <p className="text-xs text-muted-foreground mt-1">Materialien</p>
+                <div className="rounded-xl border border-border/60 p-4 text-center">
+                  <p className="text-2xl font-heading font-bold tracking-tight">{formValues.number_of_materials || "–"}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5 uppercase tracking-wider">Materialien</p>
                 </div>
-                <div className="rounded-2xl border bg-secondary/30 p-4 text-center">
-                  <p className="text-2xl font-heading font-bold">{formValues.number_of_storage_locations || "–"}</p>
-                  <p className="text-xs text-muted-foreground mt-1">Lagerorte</p>
+                <div className="rounded-xl border border-border/60 p-4 text-center">
+                  <p className="text-2xl font-heading font-bold tracking-tight">{formValues.number_of_storage_locations || "–"}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5 uppercase tracking-wider">Lagerorte</p>
                 </div>
-                <div className="rounded-2xl border bg-secondary/30 p-4 text-center">
-                  <p className="text-2xl font-heading font-bold">{selectedDocTypes.length}</p>
-                  <p className="text-xs text-muted-foreground mt-1">Dokumente</p>
+                <div className="rounded-xl border border-border/60 p-4 text-center">
+                  <p className="text-2xl font-heading font-bold tracking-tight">{selectedDocTypes.length}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5 uppercase tracking-wider">Dokumente</p>
                 </div>
               </div>
 
-              <div className="rounded-2xl border bg-secondary/30 p-5">
-                <p className="text-sm font-medium mb-3">Ausgewählte Dokumente</p>
+              <div className="rounded-xl border border-border/60 p-5">
+                <p className="text-xs font-medium mb-3 uppercase tracking-wider text-muted-foreground">Ausgewählte Dokumente</p>
                 <div className="flex flex-wrap gap-2">
                   {selectedDocTypes.map((type) => {
                     const tpl = documentTemplates.find((t) => t.type === type);
                     return (
-                      <span key={type} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/10 text-primary text-sm font-medium">
+                      <span key={type} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-foreground text-background text-xs font-medium">
                         <Check className="h-3 w-3" />
                         {tpl?.label || documentTypeLabels[type] || type}
                       </span>
@@ -535,8 +521,8 @@ export default function GeneratePage() {
               </div>
 
               <div className="flex justify-center pt-4">
-                <Button size="lg" onClick={handleGenerate} className="rounded-2xl px-10 h-12 text-base shadow-lg shadow-primary/20">
-                  <Sparkles className="mr-2 h-5 w-5" /> Dokumente generieren
+                <Button onClick={handleGenerate} className="rounded-lg h-10 px-8 text-sm">
+                  <Sparkles className="mr-2 h-4 w-4" /> Dokumente generieren
                 </Button>
               </div>
             </div>
@@ -546,12 +532,12 @@ export default function GeneratePage() {
 
       {/* Navigation */}
       <div className="flex justify-between mt-6">
-        <Button variant="outline" onClick={handleBack} className="rounded-2xl px-6">
-          <ChevronLeft className="mr-2 h-4 w-4" /> Zurück
+        <Button variant="outline" onClick={handleBack} size="sm" className="rounded-lg h-9 px-5">
+          <ChevronLeft className="mr-1.5 h-3.5 w-3.5" /> Zurück
         </Button>
         {currentStep < totalSteps - 1 && (
-          <Button onClick={handleNext} className="rounded-2xl px-6">
-            Weiter <ChevronRight className="ml-2 h-4 w-4" />
+          <Button onClick={handleNext} size="sm" className="rounded-lg h-9 px-5">
+            Weiter <ChevronRight className="ml-1.5 h-3.5 w-3.5" />
           </Button>
         )}
       </div>
