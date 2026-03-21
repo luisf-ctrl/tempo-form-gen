@@ -1,17 +1,16 @@
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 type StatusVariant = "active" | "completed" | "draft" | "archived" | "generated" | "pending" | "error" | "deprecated";
 
 const variantStyles: Record<StatusVariant, string> = {
-  active: "bg-primary/10 text-primary border-primary/20",
-  completed: "bg-success/10 text-success border-success/20",
-  draft: "bg-muted text-muted-foreground border-border",
-  archived: "bg-muted text-muted-foreground border-border",
-  generated: "bg-primary/10 text-primary border-primary/20",
-  pending: "bg-warning/10 text-warning border-warning/20",
-  error: "bg-destructive/10 text-destructive border-destructive/20",
-  deprecated: "bg-muted text-muted-foreground border-border",
+  active: "bg-foreground text-background",
+  completed: "bg-success/10 text-success",
+  draft: "bg-secondary text-muted-foreground",
+  archived: "bg-secondary text-muted-foreground",
+  generated: "bg-foreground text-background",
+  pending: "bg-warning/10 text-warning",
+  error: "bg-destructive/10 text-destructive",
+  deprecated: "bg-secondary text-muted-foreground",
 };
 
 const labels: Record<StatusVariant, string> = {
@@ -33,15 +32,14 @@ interface StatusBadgeProps {
 export function StatusBadge({ status, className }: StatusBadgeProps) {
   const variant = status as StatusVariant;
   return (
-    <Badge
-      variant="outline"
+    <span
       className={cn(
-        "font-medium text-xs",
+        "inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium uppercase tracking-wider",
         variantStyles[variant] || variantStyles.draft,
         className
       )}
     >
       {labels[variant] || status}
-    </Badge>
+    </span>
   );
 }

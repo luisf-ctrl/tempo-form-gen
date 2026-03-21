@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -29,7 +28,6 @@ import { categoryLabels, categoryColors } from "@/lib/checklistGenerator";
 import type { Project, ChecklistItem, ProjectParameters } from "@/types";
 import { cn } from "@/lib/utils";
 
-// Helper: flatten nested parameters to dot-notation for DynamicForm
 function flattenParams(params: ProjectParameters): Record<string, any> {
   const flat: Record<string, any> = {};
   for (const [section, values] of Object.entries(params)) {
@@ -40,7 +38,6 @@ function flattenParams(params: ProjectParameters): Record<string, any> {
   return flat;
 }
 
-// Helper: unflatten dot-notation values back to nested structure
 function unflattenParams(flat: Record<string, any>): ProjectParameters {
   const result: any = {};
   for (const [key, val] of Object.entries(flat)) {
@@ -102,9 +99,9 @@ export default function ProjectDetailPage() {
   if (!project) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <p className="text-muted-foreground mb-4">Projekt nicht gefunden</p>
-        <Button variant="outline" onClick={() => navigate("/projects")}>
-          <ArrowLeft className="mr-2 h-4 w-4" /> Zurück zu Projekten
+        <p className="text-muted-foreground text-sm mb-4">Projekt nicht gefunden</p>
+        <Button variant="outline" size="sm" onClick={() => navigate("/projects")} className="rounded-lg">
+          <ArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Zurück zu Projekten
         </Button>
       </div>
     );
@@ -124,183 +121,168 @@ export default function ProjectDetailPage() {
   const completedChecklist = project.checklist.filter((c) => c.completed).length;
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-8 animate-fade-in max-w-6xl">
       {/* Header */}
       <div className="flex items-start justify-between">
-        <div className="flex items-start gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate("/projects")}>
-            <ArrowLeft className="h-5 w-5" />
+        <div className="flex items-start gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate("/projects")} className="h-8 w-8 rounded-lg">
+            <ArrowLeft className="h-4 w-4" />
           </Button>
           <div>
+            <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-medium mb-1">
+              {solutionAreaLabels[project.solutionArea]}
+            </p>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-heading font-bold">{project.name}</h1>
+              <h1 className="text-2xl font-heading font-bold tracking-tight">{project.name}</h1>
               <StatusBadge status={project.status} />
             </div>
-            <p className="text-muted-foreground mt-1">
-              {project.client} · {solutionAreaLabels[project.solutionArea]}
-            </p>
+            <p className="text-muted-foreground text-sm mt-0.5">{project.client}</p>
           </div>
         </div>
-        <Button asChild>
+        <Button asChild size="sm" className="rounded-lg h-9">
           <Link to={`/generate?project=${project.id}`}>
-            <FilePlus className="mr-2 h-4 w-4" /> Dokument generieren
+            <FilePlus className="mr-1.5 h-3.5 w-3.5" /> Dokument generieren
           </Link>
         </Button>
       </div>
 
       {/* Overview Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-sm text-muted-foreground">Fortschritt</p>
-            <div className="flex items-center gap-3 mt-1">
-              <Progress value={project.progress} className="h-2 flex-1" />
-              <span className="text-sm font-bold">{project.progress}%</span>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-sm text-muted-foreground">Checkliste</p>
-            <p className="text-xl font-bold mt-1">{completedChecklist}/{totalChecklist}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-sm text-muted-foreground">Generierte Dokumente</p>
-            <p className="text-xl font-bold mt-1">{project.generatedDocuments.length}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-sm text-muted-foreground">Erstellt am</p>
-            <p className="text-xl font-bold mt-1">{project.createdAt}</p>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="p-4 rounded-xl border border-border/60">
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Fortschritt</p>
+          <div className="flex items-center gap-3 mt-2">
+            <Progress value={project.progress} className="h-1 flex-1" />
+            <span className="text-sm font-bold font-heading">{project.progress}%</span>
+          </div>
+        </div>
+        <div className="p-4 rounded-xl border border-border/60">
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Checkliste</p>
+          <p className="text-xl font-bold font-heading mt-1">{completedChecklist}/{totalChecklist}</p>
+        </div>
+        <div className="p-4 rounded-xl border border-border/60">
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Dokumente</p>
+          <p className="text-xl font-bold font-heading mt-1">{project.generatedDocuments.length}</p>
+        </div>
+        <div className="p-4 rounded-xl border border-border/60">
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Erstellt</p>
+          <p className="text-xl font-bold font-heading mt-1">{project.createdAt}</p>
+        </div>
       </div>
 
       {/* Tabs */}
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid grid-cols-4 w-full max-w-lg">
-          <TabsTrigger value="overview" className="gap-1.5">
-            <LayoutDashboard className="h-4 w-4" /> Übersicht
+        <TabsList className="grid grid-cols-4 w-full max-w-lg h-9 rounded-lg bg-secondary/50">
+          <TabsTrigger value="overview" className="gap-1.5 text-xs rounded-md">
+            <LayoutDashboard className="h-3.5 w-3.5" /> Übersicht
           </TabsTrigger>
-          <TabsTrigger value="parameters" className="gap-1.5">
-            <Settings2 className="h-4 w-4" /> Parameter
+          <TabsTrigger value="parameters" className="gap-1.5 text-xs rounded-md">
+            <Settings2 className="h-3.5 w-3.5" /> Parameter
           </TabsTrigger>
-          <TabsTrigger value="documents" className="gap-1.5">
-            <FileText className="h-4 w-4" /> Dokumente
+          <TabsTrigger value="documents" className="gap-1.5 text-xs rounded-md">
+            <FileText className="h-3.5 w-3.5" /> Dokumente
           </TabsTrigger>
-          <TabsTrigger value="checklist" className="gap-1.5">
-            <CheckSquare className="h-4 w-4" /> Checkliste
+          <TabsTrigger value="checklist" className="gap-1.5 text-xs rounded-md">
+            <CheckSquare className="h-3.5 w-3.5" /> Checkliste
           </TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
         <TabsContent value="overview">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-heading">Projektdaten</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
+            <div className="rounded-xl border border-border/60 p-6">
+              <h3 className="font-heading font-semibold text-sm tracking-tight mb-4">Projektdaten</h3>
+              <div className="space-y-3">
                 <InfoRow label="Projektname" value={project.parameters.projektdaten.name} />
                 <InfoRow label="Projektkürzel" value={project.parameters.projektdaten.kuerzel} />
                 <InfoRow label="Projekttyp" value={project.parameters.projektdaten.typ} />
                 <InfoRow label="Auftraggeber" value={project.parameters.organisationen.auftraggeber} />
                 <InfoRow label="Implementierungspartner" value={project.parameters.organisationen.implementierungspartner} />
                 {project.parameters.projektdaten.beschreibung && (
-                  <div>
-                    <p className="text-sm text-muted-foreground">Beschreibung</p>
-                    <p className="text-sm mt-0.5">{project.parameters.projektdaten.beschreibung}</p>
+                  <div className="pt-2">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Beschreibung</p>
+                    <p className="text-sm leading-relaxed">{project.parameters.projektdaten.beschreibung}</p>
                   </div>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-heading">Schlüsseltermine</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <InfoRow label="Projektstart" value={project.parameters.schluesseltermine.projektstart} icon={<Calendar className="h-3.5 w-3.5" />} />
+            <div className="rounded-xl border border-border/60 p-6">
+              <h3 className="font-heading font-semibold text-sm tracking-tight mb-4">Schlüsseltermine</h3>
+              <div className="space-y-3">
+                <InfoRow label="Projektstart" value={project.parameters.schluesseltermine.projektstart} />
                 <InfoRow label="Ende Prepare" value={project.parameters.schluesseltermine.endePrepare} />
                 <InfoRow label="Ende Explore" value={project.parameters.schluesseltermine.endeExplore} />
                 <InfoRow label="Ende Realize" value={project.parameters.schluesseltermine.endeRealize} />
-                <InfoRow label="Go-Live" value={project.parameters.schluesseltermine.goLive} icon={<Calendar className="h-3.5 w-3.5 text-primary" />} />
+                <InfoRow label="Go-Live" value={project.parameters.schluesseltermine.goLive} />
                 <InfoRow label="Ende Hypercare" value={project.parameters.schluesseltermine.endeHypercare} />
                 <InfoRow label="Projektende" value={project.parameters.schluesseltermine.projektende} />
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
         </TabsContent>
 
         {/* Parameters Tab */}
         <TabsContent value="parameters">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg font-heading">Projekt-Parameter</CardTitle>
+          <div className="rounded-xl border border-border/60 p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="font-heading font-semibold text-sm tracking-tight">Projekt-Parameter</h3>
               {hasChanges && (
-                <Button onClick={handleSaveParams}>
-                  <Save className="mr-2 h-4 w-4" /> Speichern
+                <Button onClick={handleSaveParams} size="sm" className="rounded-lg h-8 text-xs">
+                  <Save className="mr-1.5 h-3.5 w-3.5" /> Speichern
                 </Button>
               )}
-            </CardHeader>
-            <CardContent>
-              <DynamicForm
-                config={projectParametersConfig}
-                values={paramValues}
-                onChange={handleParamChange}
-              />
-            </CardContent>
-          </Card>
+            </div>
+            <DynamicForm
+              config={projectParametersConfig}
+              values={paramValues}
+              onChange={handleParamChange}
+            />
+          </div>
         </TabsContent>
 
         {/* Documents Tab */}
         <TabsContent value="documents">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {areaTemplates.map((tpl) => {
               const generated = project.generatedDocuments.filter((d) => d.type === tpl.type);
               const latestDoc = generated[generated.length - 1];
               return (
-                <Card key={tpl.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-5">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-medium text-sm">{tpl.label}</h3>
-                          <Badge variant="outline" className={cn("text-xs", formatColors[tpl.format])}>
-                            {formatLabels[tpl.format]}
-                          </Badge>
-                        </div>
-                        <p className="text-xs text-muted-foreground">{tpl.description}</p>
+                <div key={tpl.id} className="p-5 rounded-xl border border-border/60 hover:border-foreground/15 transition-colors">
+                  <div className="flex items-start justify-between mb-1">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-medium text-sm">{tpl.label}</h3>
+                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
+                          {formatLabels[tpl.format]}
+                        </span>
                       </div>
+                      <p className="text-xs text-muted-foreground mt-0.5">{tpl.description}</p>
                     </div>
-                    <div className="flex items-center justify-between mt-4 pt-3 border-t">
-                      {latestDoc ? (
-                        <div className="flex items-center gap-2">
-                          <StatusBadge status={latestDoc.status} />
-                          <span className="text-xs text-muted-foreground">{latestDoc.createdAt}</span>
-                        </div>
-                      ) : (
-                        <span className="text-xs text-muted-foreground">Noch nicht generiert</span>
-                      )}
-                      <div className="flex gap-2">
-                        {latestDoc && (
-                          <Button variant="ghost" size="sm">
-                            <Download className="h-4 w-4" />
-                          </Button>
-                        )}
-                        <Button variant="outline" size="sm" asChild>
-                          <Link to={`/generate?project=${project.id}&type=${tpl.type}`}>
-                            <FilePlus className="mr-1 h-3.5 w-3.5" />
-                            {latestDoc ? "Neu" : "Generieren"}
-                          </Link>
+                  </div>
+                  <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/40">
+                    {latestDoc ? (
+                      <div className="flex items-center gap-2">
+                        <StatusBadge status={latestDoc.status} />
+                        <span className="text-[10px] text-muted-foreground">{latestDoc.createdAt}</span>
+                      </div>
+                    ) : (
+                      <span className="text-[10px] text-muted-foreground">Noch nicht generiert</span>
+                    )}
+                    <div className="flex gap-2">
+                      {latestDoc && (
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                          <Download className="h-3.5 w-3.5" />
                         </Button>
-                      </div>
+                      )}
+                      <Button variant="outline" size="sm" asChild className="rounded-lg h-7 text-[10px] px-3">
+                        <Link to={`/generate?project=${project.id}&type=${tpl.type}`}>
+                          <FilePlus className="mr-1 h-3 w-3" />
+                          {latestDoc ? "Neu" : "Generieren"}
+                        </Link>
+                      </Button>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               );
             })}
           </div>
@@ -308,17 +290,15 @@ export default function ProjectDetailPage() {
 
         {/* Checklist Tab */}
         <TabsContent value="checklist">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg font-heading">Projekt-Checkliste</CardTitle>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-muted-foreground">{completedChecklist} von {totalChecklist} erledigt</span>
-                  <Progress value={project.progress} className="w-32 h-2" />
-                </div>
+          <div className="rounded-xl border border-border/60 p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="font-heading font-semibold text-sm tracking-tight">Projekt-Checkliste</h3>
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-muted-foreground">{completedChecklist} von {totalChecklist}</span>
+                <Progress value={project.progress} className="w-24 h-1" />
               </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
+            </div>
+            <div className="space-y-3">
               {(["prepare", "explore", "realize", "deploy", "run"] as const).map((cat) => {
                 const items = checklistByCategory[cat] || [];
                 if (items.length === 0) return null;
@@ -326,27 +306,25 @@ export default function ProjectDetailPage() {
                 const isCollapsed = collapsedCategories[cat];
 
                 return (
-                  <div key={cat} className="border rounded-xl overflow-hidden">
+                  <div key={cat} className="border border-border/60 rounded-xl overflow-hidden">
                     <button
                       type="button"
                       onClick={() => toggleCategory(cat)}
-                      className="flex items-center justify-between w-full p-4 hover:bg-muted/30 transition-colors"
+                      className="flex items-center justify-between w-full p-3.5 hover:bg-secondary/30 transition-colors"
                     >
                       <div className="flex items-center gap-3">
-                        {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                        <Badge variant="secondary" className={cn("text-xs", categoryColors[cat])}>
-                          {categoryLabels[cat]}
-                        </Badge>
-                        <span className="text-sm text-muted-foreground">{catDone}/{items.length}</span>
+                        {isCollapsed ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                        <span className="text-xs font-medium uppercase tracking-wider">{categoryLabels[cat]}</span>
+                        <span className="text-[10px] text-muted-foreground">{catDone}/{items.length}</span>
                       </div>
-                      <Progress value={items.length > 0 ? (catDone / items.length) * 100 : 0} className="w-24 h-1.5" />
+                      <Progress value={items.length > 0 ? (catDone / items.length) * 100 : 0} className="w-20 h-1" />
                     </button>
                     {!isCollapsed && (
-                      <div className="border-t divide-y">
+                      <div className="border-t border-border/40 divide-y divide-border/40">
                         {items.map((item) => (
                           <label
                             key={item.id}
-                            className="flex items-center gap-3 px-4 py-3 hover:bg-muted/20 cursor-pointer transition-colors"
+                            className="flex items-center gap-3 px-4 py-2.5 hover:bg-secondary/20 cursor-pointer transition-colors"
                           >
                             <Checkbox
                               checked={item.completed}
@@ -356,9 +334,9 @@ export default function ProjectDetailPage() {
                               {item.label}
                             </span>
                             {item.linkedDocumentType && (
-                              <Badge variant="outline" className="text-xs">
+                              <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
                                 {documentTypeLabels[item.linkedDocumentType]}
-                              </Badge>
+                              </span>
                             )}
                           </label>
                         ))}
@@ -367,21 +345,18 @@ export default function ProjectDetailPage() {
                   </div>
                 );
               })}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
   );
 }
 
-function InfoRow({ label, value, icon }: { label: string; value: string; icon?: React.ReactNode }) {
+function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-1.5">
-        {icon}
-        <span className="text-sm text-muted-foreground">{label}</span>
-      </div>
+    <div className="flex items-center justify-between py-1.5 border-b border-border/30 last:border-0">
+      <span className="text-xs text-muted-foreground">{label}</span>
       <span className="text-sm font-medium">{value || "—"}</span>
     </div>
   );
