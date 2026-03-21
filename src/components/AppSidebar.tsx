@@ -25,7 +25,7 @@ import {
 const mainItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
   { title: "Projekte", url: "/projects", icon: FolderOpen },
-  { title: "Dokument generieren", url: "/generate", icon: FilePlus },
+  { title: "Generieren", url: "/generate", icon: FilePlus },
   { title: "Dokumente", url: "/documents", icon: FileText },
   { title: "Templates", url: "/templates", icon: BookTemplate },
 ];
@@ -38,17 +38,17 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="p-4">
+      <SidebarHeader className="p-5">
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-heading font-bold text-sm">PG</span>
+          <div className="h-8 w-8 rounded-md bg-sidebar-primary flex items-center justify-center">
+            <span className="text-sidebar-primary-foreground font-heading font-bold text-sm tracking-tight">PG</span>
           </div>
           {!collapsed && (
             <div>
-              <h2 className="font-heading font-semibold text-sm text-sidebar-accent-foreground">
+              <h2 className="font-heading font-semibold text-sm text-sidebar-accent-foreground tracking-tight">
                 ProjectGen
               </h2>
-              <p className="text-xs text-sidebar-foreground/60">Document Platform</p>
+              <p className="text-[11px] text-sidebar-foreground/50 tracking-wide uppercase">Platform</p>
             </div>
           )}
         </div>
@@ -56,7 +56,9 @@ export function AppSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-[10px] uppercase tracking-[0.15em] text-sidebar-foreground/40 font-medium">
+            Navigation
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {mainItems.map((item) => (
@@ -72,11 +74,11 @@ export function AppSidebar() {
                     <NavLink
                       to={item.url}
                       end={item.url === "/"}
-                      className="hover:bg-sidebar-accent/50"
+                      className="hover:bg-sidebar-accent/50 rounded-md transition-colors"
                       activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
                     >
-                      <item.icon className="mr-2 h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
+                      <item.icon className="mr-2.5 h-4 w-4" />
+                      {!collapsed && <span className="text-[13px]">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -92,11 +94,11 @@ export function AppSidebar() {
             <SidebarMenuButton asChild>
               <NavLink
                 to="/settings"
-                className="hover:bg-sidebar-accent/50"
+                className="hover:bg-sidebar-accent/50 rounded-md"
                 activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
               >
-                <Settings className="mr-2 h-4 w-4" />
-                {!collapsed && <span>Einstellungen</span>}
+                <Settings className="mr-2.5 h-4 w-4" />
+                {!collapsed && <span className="text-[13px]">Einstellungen</span>}
               </NavLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
