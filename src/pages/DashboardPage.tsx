@@ -146,6 +146,19 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      {/* Jira Board */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <LayoutGrid className="h-4 w-4 text-muted-foreground" />
+            <h2 className="font-heading font-semibold text-base tracking-tight">Task Board</h2>
+          </div>
+        </div>
+        <div className="rounded-xl border border-border/60 bg-card p-4 overflow-hidden">
+          <JiraBoard tasks={seedBoardTasks} />
+        </div>
+      </div>
+
       {/* Updates & Ressourcen */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Letzte Updates */}
