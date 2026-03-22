@@ -26,8 +26,11 @@ import {
   BookOpen,
   ExternalLink,
   ArrowUpRight,
+  LayoutGrid,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { JiraBoard } from "@/components/JiraBoard";
+import { seedBoardTasks } from "@/data/boardTasks";
 
 const stats = [
   { label: "Aktive Projekte", value: mockProjects.filter((p) => p.status === "active").length, icon: FolderOpen },
@@ -45,7 +48,7 @@ const activityIcons = {
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-10 animate-fade-in max-w-6xl">
+    <div className="space-y-10 animate-fade-in">
       {/* Hero */}
       <div>
         <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-medium mb-3">Dashboard</p>
@@ -140,6 +143,19 @@ export default function DashboardPage() {
               );
             })}
           </div>
+        </div>
+      </div>
+
+      {/* Jira Board */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <LayoutGrid className="h-4 w-4 text-muted-foreground" />
+            <h2 className="font-heading font-semibold text-base tracking-tight">Task Board</h2>
+          </div>
+        </div>
+        <div className="rounded-xl border border-border/60 bg-card p-4 overflow-hidden">
+          <JiraBoard tasks={seedBoardTasks} />
         </div>
       </div>
 
