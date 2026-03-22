@@ -26,8 +26,11 @@ import {
   BookOpen,
   ExternalLink,
   ArrowUpRight,
+  LayoutGrid,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { JiraBoard } from "@/components/JiraBoard";
+import { seedBoardTasks } from "@/data/boardTasks";
 
 const stats = [
   { label: "Aktive Projekte", value: mockProjects.filter((p) => p.status === "active").length, icon: FolderOpen },
