@@ -21,7 +21,7 @@ export default function TemplatesPage() {
   );
 
   return (
-    <div className="space-y-8 animate-fade-in max-w-6xl">
+    <div className="space-y-8 animate-fade-in">
       <div>
         <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-medium mb-2">Templates</p>
         <h1 className="text-3xl font-heading font-bold tracking-tight">Templates & Blueprints</h1>

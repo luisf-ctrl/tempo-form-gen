@@ -121,7 +121,7 @@ export default function ProjectDetailPage() {
   const completedChecklist = project.checklist.filter((c) => c.completed).length;
 
   return (
-    <div className="space-y-8 animate-fade-in max-w-6xl">
+    <div className="space-y-8 animate-fade-in">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-3">

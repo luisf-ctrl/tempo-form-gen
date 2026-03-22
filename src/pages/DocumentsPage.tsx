@@ -32,7 +32,7 @@ export default function DocumentsPage() {
     mockProjects.find((p) => p.id === id)?.name || "—";
 
   return (
-    <div className="space-y-8 animate-fade-in max-w-6xl">
+    <div className="space-y-8 animate-fade-in">
       <div>
         <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-medium mb-2">Dokumente</p>
         <h1 className="text-3xl font-heading font-bold tracking-tight">Dokumentenübersicht</h1>

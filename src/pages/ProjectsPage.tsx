@@ -78,7 +78,7 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className="space-y-8 animate-fade-in max-w-6xl">
+    <div className="space-y-8 animate-fade-in">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-medium mb-2">Projekte</p>

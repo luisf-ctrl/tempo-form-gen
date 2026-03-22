@@ -45,7 +45,7 @@ const activityIcons = {
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-10 animate-fade-in max-w-6xl">
+    <div className="space-y-10 animate-fade-in">
       {/* Hero */}
       <div>
         <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-medium mb-3">Dashboard</p>
