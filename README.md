@@ -1,3 +1,3 @@
-# Welcome to your Lovable project
+# Blueprint Generator
 
-TODO: Document your project here
+Projektmanagement- und Dokumentengenerierungsplattform – erstellt von Luis Federolf.
